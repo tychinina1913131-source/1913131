@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#3498db">
+<meta name="description" content="Программированное задание по алгебре: квадрат суммы и квадрат разности">
+
+<!-- PWA: iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Квадрат суммы">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%233498db'/%3E%3Ctext x='96' y='130' font-size='100' text-anchor='middle' fill='white'%3E📐%3C/text%3E%3C/svg%3E">
+
+<!-- PWA: manifest -->
+<link rel="manifest" href='data:application/manifest+json,{"name":"Квадрат суммы и разности","short_name":"Квадрат суммы","start_url":"./","display":"standalone","background_color":"%23f5f7fa","theme_color":"%233498db","orientation":"portrait-primary","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 192 192%22%3E%3Crect width=%22192%22 height=%22192%22 rx=%2240%22 fill=%22%233498db%22/%3E%3Ctext x=%2296%22 y=%22130%22 font-size=%22100%22 text-anchor=%22middle%22 fill=%22white%22%3E📐%3C/text%3E%3C/svg%3E","sizes":"192x192","type":"image/svg+xml","purpose":"any maskable"},{"src":"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Crect width=%22512%22 height=%22512%22 rx=%22100%22 fill=%22%233498db%22/%3E%3Ctext x=%22256%22 y=%22340%22 font-size=%22260%22 text-anchor=%22middle%22 fill=%22white%22%3E📐%3C/text%3E%3C/svg%3E","sizes":"512x512","type":"image/svg+xml","purpose":"any maskable"}]}'>
+
+<script>
+  MathJax = { tex: { inlineMath: [['$', '$']] } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #f5f7fa;
+    color: #2c3e50;
+    line-height: 1.6;
+    padding-bottom: 100px;
+  }
+  h1 { color: #2c3e50; text-align: center; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+  h2 { color: #2980b9; margin-top: 30px; }
+  .step {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-left: 5px solid #3498db;
+    transition: all 0.3s;
+  }
+  .step.done { border-left-color: #27ae60; background: #f0fff4; }
+  .step.error { border-left-color: #e74c3c; background: #fff5f5; }
+  .step.locked { opacity: 0.5; pointer-events: none; }
+  .theory {
+    background: #eaf4fc;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    border-left: 4px solid #3498db;
+  }
+  .formula {
+    background: #fff9e6;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.2em;
+    margin: 10px 0;
+    border: 2px dashed #f39c12;
+  }
+  .warning {
+    background: #fff3cd;
+    padding: 10px;
+    border-radius: 8px;
+    border-left: 4px solid #ffc107;
+    margin: 10px 0;
+  }
+  .explanation {
+    background: linear-gradient(135deg, #fff9e6, #fff3cd);
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #f39c12;
+    margin: 15px 0;
+    display: none;
+    animation: slideDown 0.4s ease-out;
+  }
+  .explanation.show { display: block; }
+  .explanation h4 {
+    color: #d35400;
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .explanation .mistake {
+    background: #ffe0e0;
+    padding: 8px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    margin: 8px 0;
+    text-decoration: line-through;
+    color: #c0392b;
+  }
+  .explanation .correct {
+    background: #d4edda;
+    padding: 8px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    margin: 8px 0;
+    color: #155724;
+  }
+  .extra-task {
+    background: #e8f5e9;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px dashed #27ae60;
+    margin-top: 10px;
+  }
+  .extra-task h5 {
+    color: #27ae60;
+    margin-top: 0;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 2px solid #bdc3c7;
+    border-radius: 6px;
+    margin: 10px 0;
+    font-family: 'Courier New', monospace;
+  }
+  input[type="text"]:focus { border-color: #3498db; outline: none; }
+  button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    margin: 5px 5px 5px 0;
+    transition: background 0.2s;
+  }
+  button:hover { background: #2980b9; }
+  button.reset { background: #95a5a6; }
+  button.reset:hover { background: #7f8c8d; }
+  .feedback {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    display: none;
+  }
+  .feedback.correct { background: #d4edda; color: #155724; display: block; }
+  .feedback.wrong { background: #f8d7da; color: #721c24; display: block; }
+  .progress-bar {
+    background: #ecf0f1;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 25px;
+    margin: 20px 0;
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .progress-fill {
+    background: linear-gradient(90deg, #27ae60, #2ecc71);
+    height: 100%;
+    width: 0%;
+    transition: width 0.4s;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    line-height: 25px;
+  }
+  .final-result {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    margin: 30px 0;
+    display: none;
+  }
+  .final-result h2 { color: white; margin-top: 0; }
+  .final-result .grade {
+    font-size: 3em;
+    font-weight: bold;
+    margin: 15px 0;
+  }
+  .hint { font-size: 0.9em; color: #7f8c8d; font-style: italic; }
+  .example {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 6px;
+    border-left: 3px solid #95a5a6;
+    margin: 10px 0;
+    font-family: 'Courier New', monospace;
+  }
+  .sound-toggle, .install-btn {
+    position: fixed;
+    background: white;
+    border: 2px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    font-size: 1.5em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sound-toggle { top: 20px; right: 20px; }
+  .sound-toggle.muted { background: #ecf0f1; border-color: #95a5a6; }
+  .install-btn {
+    top: 80px;
+    right: 20px;
+    background: #27ae60;
+    border-color: #27ae60;
+    color: white;
+    display: none;
+    animation: pulse 2s infinite;
+  }
+  .install-btn:hover { background: #229954; }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  /* PWA: полноэкранный режим */
+  @media all and (display-mode: standalone) {
+    body { padding-top: 10px; }
+    .install-btn { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<button class="sound-toggle" id="soundToggle" onclick="toggleSound()" title="Вкл/выкл звук">🔊</button>
+<button class="install-btn" id="installBtn" onclick="installApp()" title="Установить приложение">📲</button>
+
+<h1>📐 Квадрат суммы и квадрат разности</h1>
+<p style="text-align:center; color:#7f8c8d;">Программированное задание по алгебре (7 класс)</p>
+
+<div class="progress-bar">
+  <div class="progress-fill" id="progress">0 / 11</div>
+</div>
+
+<div class="theory">
+  <strong>📖 Инструкция:</strong>
+  <ol>
+    <li>Читай теорию на каждом шаге.</li>
+    <li>Реши задание и впиши ответ в поле.</li>
+    <li>Нажми «Проверить».</li>
+    <li>Если ответ верный — <strong>звучит сигнал</strong> — переходи дальше.</li>
+    <li>Если ответ неверный — <strong>звучит предупреждение</strong>, появится разбор типичной ошибки и дополнительное задание.</li>
+    <li>Реши дополнительное задание, чтобы вернуться к основному.</li>
+    <li>Используй знак <code>^</code> для степени: <code>x^2</code>.</li>
+  </ol>
+</div>
+
+<!-- ШАГ 0 -->
+<div class="step" id="step-0">
+  <h2>Шаг 0. Вводный контроль</h2>
+  <div class="theory">Проверь, готов ли ты к новой теме.</div>
+  <p><strong>Задание:</strong> Раскрой скобки: $(a + b)(a + b) =$ ?</p>
+  <p class="hint">Подсказка: умножь каждый член первого многочлена на каждый член второго.</p>
+  <input type="text" id="input-0">
+  <button onclick="check(0)">Проверить</button>
+  <div class="feedback" id="fb-0"></div>
+  <div class="explanation" id="expl-0">
+    <h4>🔍 Разберёмся, в чём ошибка</h4>
+    <p>При умножении многочлена на многочлен нужно <strong>каждый член первого умножить на каждый член второго</strong>:</p>
+    <div class="correct">$(a+b)(a+b) = a·a + a·b + b·a + b·b = a^2 + 2ab + b^2$</div>
+    <div class="extra-task">
+      <h5>📝 Дополнительное задание:</h5>
+      <p>Раскрой скобки: $(x + 1)(x + 1) =$ ?</p>
+      <input type="text" id="extra-0">
+      <button onclick="checkExtra(0)">Проверить</button>
+      <div class="feedback" id="fb-extra-0"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ШАГ 1 -->
+<div class="step locked" id="step-1">
+  <h2>Шаг 1. Формула квадрата суммы</h2>
+  <div class="formula">$(a + b)^2 = a^2 + 2ab + b^2$</div>
+  <div class="theory">Квадрат суммы = квадрат первого + удвоенное произведение + квадрат второго.</div>
+  <p><strong>Задание 1.1:</strong> Раскрой скобки: $(x + 3)^2 =$ ?</p>
+  <input type="text" id="input-1">
+  <button onclick="check(1)">Проверить</button>
+  <div class="feedback" id="fb-1"></div>
+  <div class="explanation" id="expl-1">
+    <h4>🔍 Разберёмся, в чём ошибка</h4>
+    <p>Вспомни формулу: $(a+b)^2 = a^2 + 2ab + b^2$. Здесь $a = x$, $b = 3$.</p>
+    <p>Подставляем: $x^2 + 2·x·3 + 3^2 = x^2 + 6x + 9$</p>
+    <div class="mistake">Типичная ошибка: $x^2 + 9$ (забыли удвоенное произведение!)</div>
+    <div class="extra-task">
+      <h5>📝 Дополнительное задание:</h5>
+      <p>Раскрой скобки: $(y + 2)^2 =$ ?</p>
+      <input type="text" id="extra-1">
+      <button onclick="checkExtra(1)">Проверить</button>
+      <div class="feedback" id="fb-extra-1"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ШАГ 2 -->
+<div class="step locked" id="step-2">
+  <h2>Шаг 2. Формула квадрата разности</h2>
+  <div class="formula">$(a - b)^2 = a^2 - 2ab + b^2$</div>
+  <div class="warning">⚠️ Обрати внимание: перед удвоенным произведением стоит «минус»!</div>
+  <p><strong>Задание 2.1:</strong> Раскрой скобки: $(x - 4)^2 =$ ?</p>
+  <input type="text" id="input-2">
+  <button onclick="check(2)">Проверить</button>
+  <div class="feedback" id="fb-2"></div>
+  <div class="explanation" id="expl-2">
+    <h4>🔍 Разберёмся, в чём ошибка</h4>
+    <p>Здесь $a = x$, $b = 4$. Применяем формулу квадрата разности:</p>
+    <div class="correct">$x^2 - 2·x·4 + 4^2 = x^2 - 8x + 16$</div>
+    <div class="mistake">Типичная ошибка: $x^2 - 16$ (это формула РАЗНОСТИ квадратов, а не квадрат разности!)</div>
+    <div class="extra-task">
+      <h5>📝 Дополнительное задание:</h5>
+      <p>Раскрой скобки: $(y - 5)^2 =$ ?</p>
+      <input type="text" id="extra-2">
+      <button onclick="checkExtra(2)">Проверить</button>
+      <div class="feedback" id="fb-extra-2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ШАГ 3 -->
+<div class="step locked" id="step-3">
+  <h2>Шаг 3. Определи знак</h2>
+  <div class="theory">💡 Правило: знак перед $2ab$ такой же, как между $a$ и $b$ в скобках.</div>
+  <p><strong>Задание:</strong> В выражении $(c - 6)^2 = c^2 \ldots 12c + 36$ какой знак должен стоять вместо «…»?</p>
+  <input type="text" id="input-3">
+  <button onclick="check(3)">Проверить</button>
+  <div class="feedback" id="fb-3"></div>
+  <div class="explanation" id="expl-3">
+    <h4>🔍 Разберёмся, в чём ошибка</h4>
+    <p>Посмотри на исходное выражение: $(c - 6)^2$. Между $c$ и $6$ стоит <strong>минус</strong>.</p>
+    <p>Значит, и в формуле перед удвоенным произведением будет <strong>минус</strong>.</p>
+    <div class="correct">$(c - 6)^2 = c^2 - 12c + 36$</div>
+    <div class="extra-task">
+      <h5>📝 Дополнительное задание:</h5>
+      <p>Какой знак стоит перед удвоенным произведением в $(d + 7)^2 = d^2 \ldots 14d + 49$?</p>
+      <input type="text" id="extra-3">
+      <button onclick="checkExtra(3)">Проверить</button>
+      <div class="feedback" id="fb-extra-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ШАГ 4 -->
+<div class="step locked" id="step-4">
+  <h2>Шаг 4. Коэффициенты</h2>
+  <div class="warning">⚠️ Типичная ошибка: $(2x)^2 = 4x^2$, а не $2x^2$!</div>
+  <div class="example">Пример: $(2x + 3)^2 = (2x)^2 + 2·(2x)·3 + 3^2 = 4x^2 + 12x + 9$</div>
+  <p><strong>Задание:</strong> Раскрой скобки: $(2x + 5)^2 =$ ?</p>
+  <input type="text" id="input-4">
+  <button onclick="check(4)">Проверить</button>
+  <div class="feedback" id="fb-4"></div>
+  <div class="explanation" id="expl-4">
+    <h4>🔍 Разберёмся, в чём ошибка</h4>
+    <p>Здесь $a = 2x$, $b = 5$. Важно: в квадрат возводится <strong>всё выражение</strong> $2x$, а не только $x$!</p>
+    <div class="correct">$(2x)^2 + 2·(2x)·5 + 5^2 = 4x^2 + 20x + 25$</div>
+    <div class="mistake">Типичная ошибка: $2x^2 + 20x + 25$ (забыли возвести 2 в квадрат!)</div>
+    <div class="extra-task">
+      <h5>📝 Дополнительное задание:</h5>
+      <p>Раскрой скобки: $(3x + 1)^2 =$ ?</p>
+      <input type="text" id="extra-4">
+      <button onclick="checkExtra(4)">Проверить</button>
+      <div class="feedback" id="fb-extra-4"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ШАГ 5 -->
+<div class="step locked" id="step-5">
+  <h2>Шаг 5. Свёртывание (обратное применение)</h2>
+  <div class="theory">Формулу можно применять «справа налево»: из многочлена сделать квадрат двучлена.</div>
+  <div class="example">Пример: $x^2 + 10x + 25 = (x + 5)^2$</div>
+  <p><strong>Задание:</strong> Представь в виде квадрата двучлена: $m^2 + 6m + 9 =$ ?</p>
+  <input type="text" id="input-5">
+  <button onclick="check(5)">Проверить</button>
+  <div class="feedback" id="fb-5"></div>
+  <div class="explanation" id="expl-5">
+    <h4>🔍 Разберёмся, в чём ошибка</h4>
+    <p>Алгоритм свёртывания:</p>
+    <ol>
+      <li>Найди квадрат первого члена: $m^2$ → это $m$</li>
+      <li>Найди квадрат последнего члена: $9$ → это $3$</li>
+      <li>Проверь удвоенное произведение: $2·m·3 = 6m$ ✓</li>
+    </ol>
+    <div class="correct">Ответ: $(m + 3)^2$</div>
+    <div class="extra-task">
+      <h5>📝 Дополнительное задание:</h5>
+      <p>Представь в виде квадрата двучлена: $a^2 + 8a + 16 =$ ?</p>
+      <input type="text" id="extra-5">
+      <button onclick="checkExtra(5)">Проверить</button>
+      <div class="feedback" id="fb-extra-5"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ШАГ 6 -->
+<div class="step locked" id="step-6">
+  <h2>Шаг 6. Быстрые вычисления</h2>
+  <div class="theory">Формулы помогают быстро считать квадраты чисел, близких к круглым.</div>
+  <div class="example">Пример: $102^2 = (100 + 2)^2 = 10000 + 400 + 4 = 10404$</div>
+  <p><strong>Задание:</strong> Вычисли: $21^2 =$ ? (используй формулу)</p>
+  <input type="text" id="input-6">
+  <button onclick="check(6)">Проверить</button>
+  <div class="feedback" id="fb-6"></div>
+  <div class="explanation" id="expl-6">
+    <h4>🔍 Разберёмся, в чём ошибка</h4>
+    <p>Представь 21 как сумму: $21 = 20 + 1$. Примени формулу:</p>
+    <div class="correct">$21^2 = (20 + 1)^2 = 400 + 40 + 1 = 441$</div>
+    <div class="extra-task">
+      <h5>📝 Дополнительное задание:</h5>
+      <p>Вычисли: $31^2 =$ ?</p>
+      <input type="text" id="extra-6">
+      <button onclick="checkExtra(6)">Проверить</button>
+      <div class="feedback" id="fb-extra-6"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ШАГ 7 -->
+<div class="step locked" id="step-7">
+  <h2>Шаг 7. Уравнения</h2>
+  <div class="example">Пример: $(x + 3)^2 - x^2 = 21$<br>
+  $x^2 + 6x + 9 - x^2 = 21$<br>
+  $6x = 12$, значит $x = 2$</div>
+  <p><strong>Задание:</strong> Реши уравнение: $(x + 4)^2 - x^2 = 40$. Чему равен $x$?</p>
+  <input type="text" id="input-7">
+  <button onclick="check(7)">Проверить</button>
+  <div class="feedback" id="fb-7"></div>
+  <div class="explanation" id="expl-7">
+    <h4>🔍 Разберёмся, в чём ошибка</h4>
+    <p>Раскрой скобки по формуле: $(x+4)^2 = x^2 + 8x + 16$</p>
+    <p>Подставь: $x^2 + 8x + 16 - x^2 = 40$</p>
+    <p>Упрости: $8x + 16 = 40$ → $8x = 24$ → $x = 3$</p>
+    <div class="extra-task">
+      <h5>📝 Дополнительное задание:</h5>
+      <p>Реши уравнение: $(x + 2)^2 - x^2 = 12$. Чему равен $x$?</p>
+      <input type="text" id="extra-7">
+      <button onclick="checkExtra(7)">Проверить</button>
+      <div class="feedback" id="fb-extra-7"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ШАГ 8 -->
+<div class="step locked" id="step-8">
+  <h2>Шаг 8. Упрощение выражений</h2>
+  <p><strong>Задание:</strong> Упростите: $(a + 3)^2 - (a - 3)^2 =$ ?</p>
+  <p class="hint">Подсказка: раскрой обе скобки и приведи подобные.</p>
+  <input type="text" id="input-8">
+  <button onclick="check(8)">Проверить</button>
+  <div class="feedback" id="fb-8"></div>
+  <div class="explanation" id="expl-8">
+    <h4>🔍 Разберёмся, в чём ошибка</h4>
+    <p>Раскроем обе скобки:</p>
+    <p>$(a+3)^2 = a^2 + 6a + 9$</p>
+    <p>$(a-3)^2 = a^2 - 6a + 9$</p>
+    <p>Вычтем: $(a^2 + 6a + 9) - (a^2 - 6a + 9) = a^2 + 6a + 9 - a^2 + 6a - 9 = 12a$</p>
+    <div class="mistake">Типичная ошибка: забыть раскрыть скобки со знаком минус перед второй скобкой!</div>
+    <div class="extra-task">
+      <h5>📝 Дополнительное задание:</h5>
+      <p>Упростите: $(b + 2)^2 - (b - 2)^2 =$ ?</p>
+      <input type="text" id="extra-8">
+      <button onclick="checkExtra(8)">Проверить</button>
+      <div class="feedback" id="fb-extra-8"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ШАГ 9 -->
+<div class="step locked" id="step-9">
+  <h2>Шаг 9. Найди ошибку</h2>
+  <div class="warning">❌ Ученик написал: $(3 + x)^2 = 9 + x^2$</div>
+  <p><strong>Задание:</strong> Какой член пропущен? Напиши правильный ответ полностью.</p>
+  <input type="text" id="input-9">
+  <button onclick="check(9)">Проверить</button>
+  <div class="feedback" id="fb-9"></div>
+  <div class="explanation" id="expl-9">
+    <h4>🔍 Разберёмся, в чём ошибка</h4>
+    <p>Ученик забыл <strong>удвоенное произведение</strong> $2·3·x = 6x$.</p>
+    <div class="correct">Правильно: $(3 + x)^2 = 9 + 6x + x^2$</div>
+    <div class="extra-task">
+      <h5>📝 Дополнительное задание:</h5>
+      <p>Найди ошибку и напиши правильный ответ: $(5 + y)^2 = 25 + y^2$</p>
+      <input type="text" id="extra-9">
+      <button onclick="checkExtra(9)">Проверить</button>
+      <div class="feedback" id="fb-extra-9"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ШАГ 10 -->
+<div class="step locked" id="step-10">
+  <h2>Шаг 10. Две переменные</h2>
+  <p><strong>Задание:</strong> Раскрой скобки: $(5a + 2b)^2 =$ ?</p>
+  <input type="text" id="input-10">
+  <button onclick="check(10)">Проверить</button>
+  <div class="feedback" id="fb-10"></div>
+  <div class="explanation" id="expl-10">
+    <h4>🔍 Разберёмся, в чём ошибка</h4>
+    <p>Здесь $a = 5a$, $b = 2b$. Применяем формулу:</p>
+    <div class="correct">$(5a)^2 + 2·(5a)·(2b) + (2b)^2 = 25a^2 + 20ab + 4b^2$</div>
+    <div class="extra-task">
+      <h5>📝 Дополнительное задание:</h5>
+      <p>Раскрой скобки: $(3x + 4y)^2 =$ ?</p>
+      <input type="text" id="extra-10">
+      <button onclick="checkExtra(10)">Проверить</button>
+      <div class="feedback" id="fb-extra-10"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ИТОГ -->
+<div class="step locked" id="step-11" style="border-left-color: #8e44ad;">
+  <h2>🏁 Итоговый контроль</h2>
+  <div class="theory">Выполни все задания без подсказок. Результат появится автоматически.</div>
+  <p><strong>1.</strong> $(x + 7)^2 =$ <input type="text" id="input-11a" style="display:inline-block; width:auto;"></p>
+  <p><strong>2.</strong> $(3a - 4)^2 =$ <input type="text" id="input-11b" style="display:inline-block; width:auto;"></p>
+  <p><strong>3.</strong> $a^2 + 20a + 100 =$ <input type="text" id="input-11c" style="display:inline-block; width:auto;"></p>
+  <p><strong>4.</strong> $51^2 =$ <input type="text" id="input-11d" style="display:inline-block; width:auto;"></p>
+  <p><strong>5.</strong> Упростите: $(x + 5)^2 - (x - 5)^2 =$ <input type="text" id="input-11e" style="display:inline-block; width:auto;"></p>
+  <button onclick="checkFinal()">Проверить итог</button>
+  <div class="feedback" id="fb-11"></div>
+</div>
+
+<div class="final-result" id="final">
+  <h2>🎉 Результат</h2>
+  <div>Правильных ответов: <span id="score">0</span> / 11</div>
+  <div class="grade" id="grade">—</div>
+  <div id="recommendation"></div>
+  <button class="reset" onclick="resetAll()">🔄 Начать заново</button>
+</div>
+
+<div style="text-align:center; margin: 30px 0;">
+  <button class="reset" onclick="resetAll()">🔄 Сбросить все ответы</button>
+</div>
+
+<script>
+// ============ PWA: SERVICE WORKER ============
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('✅ SW зарегистрирован'))
+      .catch(err => console.log('⚠️ SW не зарегистрирован:', err));
+  });
+}
+
+// ============ PWA: КНОПКА УСТАНОВКИ ============
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBtn').style.display = 'flex';
+});
+
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(result => {
+      if (result.outcome === 'accepted') {
+        console.log('Пользователь установил приложение');
+      }
+      deferredPrompt = null;
+      document.getElementById('installBtn').style.display = 'none';
+    });
+  } else {
+    alert('Чтобы установить приложение:\n\n📱 На телефоне: открой меню браузера → "Добавить на главный экран"\n💻 На компьютере: нажми на значок установки в адресной строке');
+  }
+}
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBtn').style.display = 'none';
+  console.log('✅ Приложение установлено');
+});
+
+// ============ ЗВУКОВЫЕ ЭФФЕКТЫ ============
+let audioCtx = null;
+let soundEnabled = true;
+
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+}
+
+function playTone(freq, duration, startTime, type = 'sine', volume = 0.3) {
+  if (!soundEnabled) return;
+  initAudio();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(volume, startTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start(startTime);
+  osc.stop(startTime + duration);
+}
+
+function playSuccess() {
+  if (!soundEnabled) return;
+  initAudio();
+  const now = audioCtx.currentTime;
+  playTone(523.25, 0.15, now, 'sine', 0.3);
+  playTone(659.25, 0.15, now + 0.1, 'sine', 0.3);
+  playTone(783.99, 0.25, now + 0.2, 'sine', 0.3);
+}
+
+function playError() {
+  if (!soundEnabled) return;
+  initAudio();
+  const now = audioCtx.currentTime;
+  playTone(220, 0.3, now, 'triangle', 0.25);
+  playTone(196, 0.3, now + 0.15, 'triangle', 0.2);
+}
+
+function playFinal() {
+  if (!soundEnabled) return;
+  initAudio();
+  const now = audioCtx.currentTime;
+  const notes = [523.25, 659.25, 783.99, 1046.5];
+  notes.forEach((freq, i) => {
+    playTone(freq, 0.3, now + i * 0.12, 'sine', 0.3);
+  });
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  const btn = document.getElementById('soundToggle');
+  btn.textContent = soundEnabled ? '🔊' : '🔇';
+  btn.classList.toggle('muted', !soundEnabled);
+}
+
+// ============ ЭТАЛОНЫ ОТВЕТОВ ============
+const answers = {
+  0: ['a^2+2ab+b^2', 'a^2+ab+ab+b^2', 'a^2+b^2+2ab'],
+  1: ['x^2+6x+9', 'x^2+9+6x', '9+6x+x^2'],
+  2: ['x^2-8x+16', 'x^2+16-8x', '16-8x+x^2'],
+  3: ['-', 'минус'],
+  4: ['4x^2+20x+25', '4x^2+25+20x', '25+20x+4x^2'],
+  5: ['(m+3)^2', '(3+m)^2'],
+  6: ['441'],
+  7: ['3', 'x=3', 'х=3'],
+  8: ['12a', '12*a'],
+  9: ['9+6x+x^2', 'x^2+6x+9', '9+x^2+6x'],
+  10: ['25a^2+20ab+4b^2', '25a^2+4b^2+20ab']
+};
+
+const extraAnswers = {
+  0: ['x^2+2x+1', 'x^2+1+2x'],
+  1: ['y^2+4y+4', 'y^2+4+4y'],
+  2: ['y^2-10y+25', 'y^2+25-10y'],
+  3: ['+', 'плюс'],
+  4: ['9x^2+6x+1', '9x^2+1+6x'],
+  5: ['(a+4)^2', '(4+a)^2'],
+  6: ['961'],
+  7: ['2', 'x=2', 'х=2'],
+  8: ['8b', '8*b'],
+  9: ['25+10y+y^2', 'y^2+10y+25'],
+  10: ['9x^2+24xy+16y^2', '9x^2+16y^2+24xy']
+};
+
+const finalAnswers = {
+  '11a': ['x^2+14x+49', 'x^2+49+14x'],
+  '11b': ['9a^2-24a+16', '9a^2+16-24a'],
+  '11c': ['(a+10)^2', '(10+a)^2'],
+  '11d': ['2601'],
+  '11e': ['20x', '20*x']
+};
+
+function normalize(str) {
+  return str.toLowerCase().replace(/\s+/g, '').replace(/х/g, 'x');
+}
+
+// ============ ЛОГИКА ВЕТВЛЕНИЯ ============
+const stepState = {};
+for (let i = 0; i <= 11; i++) stepState[i] = i === 0 ? 'active' : 'locked';
+
+function check(step) {
+  const input = document.getElementById('input-' + step);
+  const fb = document.getElementById('fb-' + step);
+  const stepEl = document.getElementById('step-' + step);
+  const explEl = document.getElementById('expl-' + step);
+  const userAnswer = normalize(input.value);
+  
+  if (!userAnswer) {
+    fb.className = 'feedback wrong';
+    fb.innerHTML = '⚠️ Введите ответ!';
+    return;
+  }
+  
+  const correct = answers[step].some(ans => normalize(ans) === userAnswer);
+  
+  if (correct) {
+    playSuccess();
+    fb.className = 'feedback correct';
+    fb.innerHTML = '✅ Верно! Переходи к следующему шагу.';
+    stepEl.classList.remove('error');
+    stepEl.classList.add('done');
+    explEl.classList.remove('show');
+    stepState[step] = 'done';
+    
+    if (step < 11) {
+      const nextStep = document.getElementById('step-' + (step + 1));
+      nextStep.classList.remove('locked');
+      stepState[step + 1] = 'active';
+      setTimeout(() => {
+        nextStep.scrollIntoView({behavior: 'smooth', block: 'center'});
+      }, 600);
+    }
+  } else {
+    playError();
+    fb.className = 'feedback wrong';
+    fb.innerHTML = '❌ Неверно. Смотри разбор ошибки ниже и реши дополнительное задание.';
+    stepEl.classList.remove('done');
+    stepEl.classList.add('error');
+    explEl.classList.add('show');
+    stepState[step] = 'in-extra';
+    
+    setTimeout(() => {
+      explEl.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }, 300);
+  }
+  updateProgress();
+}
+
+function checkExtra(step) {
+  const input = document.getElementById('extra-' + step);
+  const fb = document.getElementById('fb-extra-' + step);
+  const userAnswer = normalize(input.value);
+  
+  if (!userAnswer) {
+    fb.className = 'feedback wrong';
+    fb.innerHTML = '⚠️ Введите ответ!';
+    return;
+  }
+  
+  const correct = extraAnswers[step].some(ans => normalize(ans) === userAnswer);
+  
+  if (correct) {
+    playSuccess();
+    fb.className = 'feedback correct';
+    fb.innerHTML = '✅ Отлично! Теперь можешь вернуться к основному заданию и решить его заново.';
+    document.getElementById('input-' + step).value = '';
+    document.getElementById('fb-' + step).className = 'feedback';
+    document.getElementById('step-' + step).classList.remove('error');
+    stepState[step] = 'active';
+    
+    setTimeout(() => {
+      document.getElementById('input-' + step).scrollIntoView({behavior: 'smooth', block: 'center'});
+      document.getElementById('input-' + step).focus();
+    }, 800);
+  } else {
+    playError();
+    fb.className = 'feedback wrong';
+    fb.innerHTML = '❌ Неверно. Перечитай разбор ещё раз.';
+  }
+}
+
+function checkFinal() {
+  let correct = 0;
+  for (const key in finalAnswers) {
+    const input = document.getElementById('input-' + key);
+    const userAnswer = normalize(input.value);
+    const isCorrect = finalAnswers[key].some(ans => normalize(ans) === userAnswer);
+    if (isCorrect) {
+      correct++;
+      input.style.background = '#d4edda';
+    } else {
+      input.style.background = '#f8d7da';
+    }
+  }
+  
+  let totalSteps = 0;
+  for (let i = 0; i <= 10; i++) {
+    if (stepState[i] === 'done') totalSteps++;
+  }
+  
+  const total = totalSteps + correct;
+  document.getElementById('score').textContent = total;
+  
+  let grade = '', recommendation = '';
+  if (total >= 10) {
+    grade = '5 🏆';
+    recommendation = 'Отлично! Тема усвоена полностью.';
+    playFinal();
+  } else if (total >= 8) {
+    grade = '4 👍';
+    recommendation = 'Хорошо! Повтори шаги, где были ошибки.';
+    playSuccess();
+  } else if (total >= 6) {
+    grade = '3 📘';
+    recommendation = 'Удовлетворительно. Вернись к шагам 1–5.';
+  } else {
+    grade = '2 📖';
+    recommendation = 'Тема не усвоена. Начни с шага 0 и обратись к учителю.';
+  }
+  
+  document.getElementById('grade').textContent = grade;
+  document.getElementById('recommendation').textContent = recommendation;
+  document.getElementById('final').style.display = 'block';
+  document.getElementById('final').scrollIntoView({behavior: 'smooth'});
+}
+
+function updateProgress() {
+  let done = 0;
+  for (let i = 0; i <= 10; i++) {
+    if (stepState[i] === 'done') done++;
+  }
+  const percent = (done / 11) * 100;
+  const bar = document.getElementById('progress');
+  bar.style.width = percent + '%';
+  bar.textContent = done + ' / 11';
+}
+
+function resetAll() {
+  if (!confirm('Сбросить все ответы и начать заново?')) return;
+  for (let i = 0; i <= 11; i++) {
+    const step = document.getElementById('step-' + i);
+    if (step) {
+      step.classList.remove('done', 'error');
+      if (i > 0) step.classList.add('locked');
+    }
+    const fb = document.getElementById('fb-' + i);
+    if (fb) fb.className = 'feedback';
+    const expl = document.getElementById('expl-' + i);
+    if (expl) expl.classList.remove('show');
+    const inputs = document.querySelectorAll('#step-' + i + ' input');
+    inputs.forEach(inp => {
+      inp.value = '';
+      inp.style.background = '';
+    });
+    stepState[i] = i === 0 ? 'active' : 'locked';
+  }
+  document.getElementById('final').style.display = 'none';
+  updateProgress();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+</script>
+
+</body>
+</html>
